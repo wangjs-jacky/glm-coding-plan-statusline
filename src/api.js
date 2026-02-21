@@ -145,10 +145,49 @@ async function fetchDailyUsage() {
     }
   }
 
+  // 计算最近5小时 token
+  const fiveHourTokens = calculateRecentHoursTokens(times, tokens, 5);
+
   return {
     dailyTokens,
+    fiveHourTokens,
     hourlyData: data?.data || {}
   };
+}
+
+/**
+ * 计算最近 N 小时的 token 使用量
+ */
+function calculateRecentHoursTokens(times, tokens, hours) {
+  if (!times || !tokens || times.length === 0) {
+    return 0;
+  }
+
+  const now = new Date();
+  let totalTokens = 0;
+
+  for (let i = 0; i < times.length; i++) {
+    if (!times[i]) continue;
+
+    try {
+      // 解析时间字符串 (格式: "YYYY-MM-DD HH:mm:ss" 或 ISO 格式)
+      const timeStr = times[i].replace(' ', 'T');
+      const recordTime = new Date(timeStr);
+
+      // 计算时间差（小时）
+      const diffMs = now - recordTime;
+      const diffHours = diffMs / (1000 * 60 * 60);
+
+      // 如果在指定小时数内，累加 token
+      if (diffHours >= 0 && diffHours <= hours) {
+        totalTokens += tokens[i] || 0;
+      }
+    } catch (e) {
+      // 忽略解析错误
+    }
+  }
+
+  return totalTokens;
 }
 
 /**

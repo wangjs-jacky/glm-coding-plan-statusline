@@ -121,6 +121,7 @@ function parseContext(input) {
 
 /**
  * 生成状态栏输出
+ * 显示顺序：每5小时 > 当前会话 > 日 > 月 > MCP剩余
  */
 function formatStatusLine(context, usageData, options = {}) {
   const {
@@ -129,6 +130,7 @@ function formatStatusLine(context, usageData, options = {}) {
     showSession = true,
     showMCP = true,
     showContext = true,
+    showFiveHours = true,
     twoLines = true
   } = options;
 
@@ -145,11 +147,13 @@ function formatStatusLine(context, usageData, options = {}) {
   const mcpRemaining = 100 - mcpPercentage;
   const quotaColor = getQuotaColor(mcpRemaining);
 
-  // 月度/日度数据
+  // 月度/日度/5小时数据
   const monthlyTokens = usageData?.monthly?.totalTokens || 0;
   const dailyTokens = usageData?.daily?.dailyTokens || 0;
+  const fiveHourTokens = usageData?.daily?.fiveHourTokens || 0;
   const monthlyDisplay = formatTokens(monthlyTokens);
   const dailyDisplay = formatTokens(dailyTokens);
+  const fiveHourDisplay = formatTokens(fiveHourTokens);
 
   // 进度条
   const progressBar = makeProgressBar(context.contextUsed);
@@ -160,24 +164,36 @@ function formatStatusLine(context, usageData, options = {}) {
   // 模型
   parts.push(`${COLORS.cyan}${context.model}${COLORS.reset}`);
 
-  // MCP 配额
-  if (showMCP) {
-    parts.push(`${quotaColor}MCP:${mcpRemaining}%${COLORS.reset}`);
+  // Token 使用 - 按新顺序：5小时 > 会话 > 日 > 月 > MCP
+  const tokenParts = [];
+
+  // 每5小时额度
+  if (showFiveHours) {
+    tokenParts.push(`${COLORS.brightMagenta}5h:${fiveHourDisplay}${COLORS.reset}`);
   }
 
-  // Token 使用
-  const tokenParts = [];
-  if (showMonthly) {
-    tokenParts.push(`${COLORS.blue}月:${monthlyDisplay}${COLORS.reset}`);
-  }
-  if (showDaily) {
-    tokenParts.push(`${COLORS.magenta}日:${dailyDisplay}${COLORS.reset}`);
-  }
+  // 当前会话
   if (showSession) {
     tokenParts.push(`${COLORS.dim}会话:${sessionDisplay}${COLORS.reset}`);
   }
+
+  // 日
+  if (showDaily) {
+    tokenParts.push(`${COLORS.magenta}日:${dailyDisplay}${COLORS.reset}`);
+  }
+
+  // 月
+  if (showMonthly) {
+    tokenParts.push(`${COLORS.blue}月:${monthlyDisplay}${COLORS.reset}`);
+  }
+
   if (tokenParts.length > 0) {
     parts.push(tokenParts.join(' '));
+  }
+
+  // MCP 配额（放在最后）
+  if (showMCP) {
+    parts.push(`${quotaColor}MCP:${mcpRemaining}%${COLORS.reset}`);
   }
 
   const line1 = parts.join(' │ ');
@@ -206,6 +222,7 @@ function formatCompactStatusLine(context, usageData) {
     showSession: true,
     showMCP: true,
     showContext: true,
+    showFiveHours: true,
     twoLines: false
   });
 }

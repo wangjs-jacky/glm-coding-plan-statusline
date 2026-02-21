@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/npm/v/glm-coding-plan-statusline.svg" alt="npm version">
+  <img src="https://img.shields.io/npm/v/@wangjs-jacky/glm-coding-plan-statusline.svg" alt="npm version">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
   <img src="https://img.shields.io/badge/Node.js-16+-green.svg" alt="Node.js">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-blue.svg" alt="Platform">
@@ -44,7 +44,7 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "npx glm-coding-plan-statusline@latest"
+    "command": "npx @wangjs-jacky/glm-coding-plan-statusline@latest"
   }
 }
 ```
@@ -54,7 +54,7 @@
 ### 📊 显示效果
 
 ```
-GLM-5 │ MCP:79% │ 月:979.2M 日:42.8M 会话:160.0K
+GLM-5 │ 5h:128.5M 会话:160.0K 日:42.8M 月:979.2M │ MCP:79%
 Ctx [██████░░░░] 68% (200K)
 ```
 
@@ -63,29 +63,30 @@ Ctx [██████░░░░] 68% (200K)
 | 字段 | 说明 | 颜色规则 |
 |------|------|----------|
 | **GLM-5** | 当前模型 | 青色 |
-| **MCP:79%** | 月度配额剩余 | 绿(≥50%) / 黄(20-50%) / 红(<20%) |
-| **月:979.2M** | 当月 Token 消耗 | 蓝色 |
-| **日:42.8M** | 今日 Token 消耗 | 紫色 |
+| **5h:128.5M** | 最近5小时 Token 消耗 | 亮紫色 |
 | **会话:160.0K** | 当前对话 Token | 灰色 |
+| **日:42.8M** | 今日 Token 消耗 | 紫色 |
+| **月:979.2M** | 当月 Token 消耗 | 蓝色 |
+| **MCP:79%** | 月度配额剩余 | 绿(≥50%) / 黄(20-50%) / 红(<20%) |
 | **[██████░░░░]** | 上下文进度条 | 绿(<50%) / 黄(50-80%) / 红(>80%) |
 
 ### ⚙️ 配置选项
 
 ```bash
 # 完整模式 (双行显示，推荐)
-npx glm-coding-plan-statusline
+npx @wangjs-jacky/glm-coding-plan-statusline
 
 # 紧凑模式 (单行显示)
-npx glm-coding-plan-statusline --compact
+npx @wangjs-jacky/glm-coding-plan-statusline --compact
 
 # 本地模式 (不请求 API，仅显示上下文)
-npx glm-coding-plan-statusline --local
+npx @wangjs-jacky/glm-coding-plan-statusline --local
 
 # 清除缓存
-npx glm-coding-plan-statusline --clear-cache
+npx @wangjs-jacky/glm-coding-plan-statusline --clear-cache
 
 # 查看帮助
-npx glm-coding-plan-statusline --help
+npx @wangjs-jacky/glm-coding-plan-statusline --help
 ```
 
 ### 🔧 环境变量
@@ -130,7 +131,7 @@ Add to `~/.claude/settings.json`:
 {
   "statusLine": {
     "type": "command",
-    "command": "npx glm-coding-plan-statusline@latest"
+    "command": "npx @wangjs-jacky/glm-coding-plan-statusline@latest"
   }
 }
 ```
@@ -140,7 +141,7 @@ Save and restart Claude Code to see the status bar!
 ### 📊 Display Example
 
 ```
-GLM-5 │ MCP:79% │ Month:979.2M Day:42.8M Session:160.0K
+GLM-5 │ 5h:128.5M Session:160.0K Day:42.8M Month:979.2M │ MCP:79%
 Ctx [██████░░░░] 68% (200K)
 ```
 
@@ -148,19 +149,19 @@ Ctx [██████░░░░] 68% (200K)
 
 ```bash
 # Full mode (two lines, recommended)
-npx glm-coding-plan-statusline
+npx @wangjs-jacky/glm-coding-plan-statusline
 
 # Compact mode (single line)
-npx glm-coding-plan-statusline --compact
+npx @wangjs-jacky/glm-coding-plan-statusline --compact
 
 # Local mode (no API requests, context only)
-npx glm-coding-plan-statusline --local
+npx @wangjs-jacky/glm-coding-plan-statusline --local
 
 # Clear cache
-npx glm-coding-plan-statusline --clear-cache
+npx @wangjs-jacky/glm-coding-plan-statusline --clear-cache
 
 # Show help
-npx glm-coding-plan-statusline --help
+npx @wangjs-jacky/glm-coding-plan-statusline --help
 ```
 
 ---
@@ -177,6 +178,7 @@ Issues and Pull Requests are welcome!
 
 - **Author**: wangjs-jacky
 - **GitHub**: https://github.com/wangjs-jacky/glm-coding-plan-statusline
+- **Issues**: https://github.com/wangjs-jacky/glm-coding-plan-statusline/issues
 
 ---
 
