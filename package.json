@@ -1,6 +1,6 @@
 {
-  "name": "glm-coding-plan-statusline",
-  "version": "1.0.0",
+  "name": "@wangjs-jacky/glm-coding-plan-statusline",
+  "version": "1.1.0",
   "description": "GLM Coding Plan 智能状态栏 - 帮助用户实时掌握套餐使用情况",
   "main": "src/index.js",
   "bin": {
@@ -22,7 +22,14 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wangjs-jacky/glm-coding-plan-statusline.git"
+    "url": "git+https://github.com/wangjs-jacky/glm-coding-plan-statusline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wangjs-jacky/glm-coding-plan-statusline/issues"
+  },
+  "homepage": "https://github.com/wangjs-jacky/glm-coding-plan-statusline#readme",
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "node": ">=16.0.0"
