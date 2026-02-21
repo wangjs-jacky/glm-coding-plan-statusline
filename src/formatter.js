@@ -6,11 +6,10 @@
 // ANSI 颜色代码
 const COLORS = {
   reset: '\x1b[0m',
-  bright: '\x1b[1m',
+  bold: '\x1b[1m',
   dim: '\x1b[2m',
 
   // 前景色
-  black: '\x1b[30m',
   red: '\x1b[31m',
   green: '\x1b[32m',
   yellow: '\x1b[33m',
@@ -18,14 +17,6 @@ const COLORS = {
   magenta: '\x1b[35m',
   cyan: '\x1b[36m',
   white: '\x1b[37m',
-
-  // 亮色
-  brightRed: '\x1b[91m',
-  brightGreen: '\x1b[92m',
-  brightYellow: '\x1b[93m',
-  brightBlue: '\x1b[94m',
-  brightMagenta: '\x1b[95m',
-  brightCyan: '\x1b[96m',
 };
 
 /**
@@ -60,33 +51,37 @@ function formatContextSize(size) {
 }
 
 /**
- * 生成进度条
+ * 根据百分比获取颜色
  */
-function makeProgressBar(percent, width = 10) {
-  const filled = Math.round(percent * width / 100);
-  const empty = width - filled;
-
-  // 根据百分比选择颜色
-  let color;
-  if (percent < 50) {
-    color = COLORS.green;
-  } else if (percent < 80) {
-    color = COLORS.yellow;
-  } else {
-    color = COLORS.red;
-  }
-
-  const bar = '[' + '█'.repeat(filled) + '░'.repeat(empty) + ']';
-  return `${color}${bar}${COLORS.reset}`;
+function getPercentColor(percent) {
+  if (percent < 50) return COLORS.green;
+  if (percent < 80) return COLORS.yellow;
+  return COLORS.red;
 }
 
 /**
- * 根据 MCP 剩余百分比获取颜色
+ * 生成精细进度条（支持半格）
  */
-function getQuotaColor(remaining) {
-  if (remaining >= 50) return COLORS.green;
-  if (remaining >= 20) return COLORS.yellow;
-  return COLORS.red;
+function makeProgressBar(percent, width = 8) {
+  const blocks = ['█', '▊', '▋', '▌', '▍', '▎', '▏'];
+  const totalSteps = width * (blocks.length + 1);
+  const filled = Math.round(percent * totalSteps / 100);
+  let fullChars = Math.floor(filled / (blocks.length + 1));
+  const partialIndex = filled % (blocks.length + 1);
+
+  let bar = '';
+  // 填充完整块
+  bar += '█'.repeat(fullChars);
+  // 填充部分块
+  if (fullChars < width && partialIndex > 0 && partialIndex <= blocks.length) {
+    bar += blocks[blocks.length - partialIndex];
+    fullChars++;
+  }
+  // 填充空白
+  bar += '░'.repeat(width - fullChars);
+
+  const color = getPercentColor(percent);
+  return `${color}${bar}${COLORS.reset}`;
 }
 
 /**
@@ -105,7 +100,6 @@ function parseContext(input) {
       outputTokens: data?.context_window?.current_usage?.output_tokens || 0,
       cacheCreationTokens: data?.context_window?.current_usage?.cache_creation_input_tokens || 0,
       cacheReadTokens: data?.context_window?.current_usage?.cache_read_input_tokens || 0,
-      // 工作目录
       currentDir: data?.workspace?.current_dir || '',
     };
   } catch (e) {
@@ -120,8 +114,7 @@ function parseContext(input) {
 }
 
 /**
- * 生成状态栏输出
- * 显示顺序：每5小时 > 当前会话 > 日 > 月 > MCP剩余
+ * 生成状态栏输出（简洁美观样式）
  */
 function formatStatusLine(context, usageData, options = {}) {
   const {
@@ -142,10 +135,8 @@ function formatStatusLine(context, usageData, options = {}) {
   const sessionDisplay = formatTokens(sessionTokens);
   const contextDisplay = formatContextSize(context.contextSize);
 
-  // MCP 配额（月度 Token 配额）- 显示已使用
+  // 配额数据
   const mcpUsed = usageData?.quota?.mcpUsage?.percentage || 0;
-
-  // 5 小时配额（API 调用限流）- 显示已使用
   const fiveHourUsed = usageData?.quota?.fiveHourQuota?.percentage || 0;
 
   // 月度/日度数据
@@ -154,67 +145,60 @@ function formatStatusLine(context, usageData, options = {}) {
   const monthlyDisplay = formatTokens(monthlyTokens);
   const dailyDisplay = formatTokens(dailyTokens);
 
-  // 进度条（上下文）
-  const progressBar = makeProgressBar(context.contextUsed);
+  // 分隔符
+  const sep = `${COLORS.dim}│${COLORS.reset}`;
 
-  // 5h 进度条（已使用）
-  const fiveHourBar = makeProgressBar(fiveHourUsed);
-
-  // MCP 进度条（已使用）
-  const mcpBar = makeProgressBar(mcpUsed);
-
-  // 构建第一行
+  // 构建第一行组件
   const parts = [];
 
   // 模型
-  parts.push(`${COLORS.cyan}${context.model}${COLORS.reset}`);
+  parts.push(`${COLORS.cyan}${COLORS.bold}${context.model}${COLORS.reset}`);
 
-  // Token 使用 - 按新顺序：5小时配额 > 会话 > 日 > 月 > MCP
-  const tokenParts = [];
-
-  // 每5小时配额（进度条，显示已使用）
+  // 5小时配额
   if (showFiveHours) {
-    tokenParts.push(`5h${fiveHourBar}${fiveHourUsed}%`);
+    const bar = makeProgressBar(fiveHourUsed, 5);
+    const color = getPercentColor(fiveHourUsed);
+    parts.push(`5h ${bar}${color}${fiveHourUsed}%${COLORS.reset}`);
   }
 
-  // 当前会话
+  // Token 统计（合并显示）
+  const tokenParts = [];
   if (showSession) {
-    tokenParts.push(`${COLORS.dim}会话:${sessionDisplay}${COLORS.reset}`);
+    tokenParts.push(`${COLORS.dim}S:${sessionDisplay}${COLORS.reset}`);
   }
-
-  // 日
   if (showDaily) {
-    tokenParts.push(`${COLORS.magenta}日:${dailyDisplay}${COLORS.reset}`);
+    tokenParts.push(`D:${dailyDisplay}`);
   }
-
-  // 月
   if (showMonthly) {
-    tokenParts.push(`${COLORS.blue}月:${monthlyDisplay}${COLORS.reset}`);
+    tokenParts.push(`${COLORS.blue}M:${monthlyDisplay}${COLORS.reset}`);
   }
-
   if (tokenParts.length > 0) {
     parts.push(tokenParts.join(' '));
   }
 
-  // MCP 配额（进度条，显示已使用）
+  // MCP 配额
   if (showMCP) {
-    parts.push(`MCP${mcpBar}${mcpUsed}%`);
+    const bar = makeProgressBar(mcpUsed, 5);
+    const color = getPercentColor(mcpUsed);
+    parts.push(`MCP ${bar}${color}${mcpUsed}%${COLORS.reset}`);
   }
 
-  const line1 = parts.join(' │ ');
+  // 第一行
+  const line1 = parts.join(` ${sep} `);
 
   if (!showContext) {
     return line1;
   }
 
   // 第二行：上下文进度条
-  const line2 = `Ctx ${progressBar} ${context.contextUsed}% (${contextDisplay})`;
+  const contextBar = makeProgressBar(context.contextUsed, 10);
+  const line2 = `Ctx ${contextBar} ${COLORS.bold}${context.contextUsed}%${COLORS.reset} (${contextDisplay})`;
 
   if (twoLines) {
     return `${line1}\n${line2}`;
   }
 
-  return `${line1} │ ${progressBar} ${context.contextUsed}%`;
+  return `${line1} ${sep} ${contextBar} ${context.contextUsed}%`;
 }
 
 /**
@@ -237,7 +221,7 @@ module.exports = {
   formatTokens,
   formatContextSize,
   makeProgressBar,
-  getQuotaColor,
+  getPercentColor,
   parseContext,
   formatStatusLine,
   formatCompactStatusLine
