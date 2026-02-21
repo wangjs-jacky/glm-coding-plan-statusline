@@ -136,13 +136,13 @@ function formatStatusLine(context, usageData, options = {}) {
   line1Parts.push(`${COLORS.cyan}${COLORS.bold}${context.model}${COLORS.reset}`);
 
   if (showSession) {
-    line1Parts.push(`${COLORS.dim}会话:${sessionDisplay}${COLORS.reset}`);
+    line1Parts.push(`${COLORS.dim}Sess:${sessionDisplay}${COLORS.reset}`);
   }
   if (showDaily) {
-    line1Parts.push(`日:${dailyDisplay}`);
+    line1Parts.push(`Day:${dailyDisplay}`);
   }
   if (showMonthly) {
-    line1Parts.push(`${COLORS.blue}月:${monthlyDisplay}${COLORS.reset}`);
+    line1Parts.push(`${COLORS.blue}Mon:${monthlyDisplay}${COLORS.reset}`);
   }
 
   const line1 = line1Parts.join(' │ ');
