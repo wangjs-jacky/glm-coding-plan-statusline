@@ -153,7 +153,7 @@ function formatStatusLine(context, usageData, options = {}) {
   if (showFiveHours) {
     const bar = makeProgressBar(fiveHourUsed, 8);
     const color = getPercentColor(fiveHourUsed);
-    barParts.push(`5h ${bar}${color}${fiveHourUsed}%${COLORS.reset}`);
+    barParts.push(`5H ${bar}${color}${fiveHourUsed}%${COLORS.reset}`);
   }
 
   if (showMCP) {
