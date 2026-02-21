@@ -208,8 +208,8 @@ async function fetchQuotaLimit() {
 
   for (const limit of limits) {
     if (limit.type === 'TIME_LIMIT') {
-      // 5 小时限流配额
-      fiveHourQuota = {
+      // MCP 配额（API 标签搞反了，TIME_LIMIT 实际是 MCP）
+      mcpUsage = {
         percentage: limit.percentage || 0,
         remaining: 100 - (limit.percentage || 0),
         current: limit.currentValue || 0,
@@ -218,8 +218,8 @@ async function fetchQuotaLimit() {
       };
     }
     if (limit.type === 'TOKENS_LIMIT') {
-      // Token 配额 (MCP)
-      mcpUsage = {
+      // 5 小时配额（API 标签搞反了，TOKENS_LIMIT 实际是 5H）
+      fiveHourQuota = {
         percentage: limit.percentage || 0,
         remaining: 100 - (limit.percentage || 0)
       };
