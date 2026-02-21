@@ -145,12 +145,10 @@ function formatStatusLine(context, usageData, options = {}) {
   // MCP 配额（月度 Token 配额）
   const mcpPercentage = usageData?.quota?.mcpUsage?.percentage || 0;
   const mcpRemaining = 100 - mcpPercentage;
-  const quotaColor = getQuotaColor(mcpRemaining);
 
   // 5 小时配额（API 调用限流）
   const fiveHourPercentage = usageData?.quota?.fiveHourQuota?.percentage || 0;
   const fiveHourRemaining = 100 - fiveHourPercentage;
-  const fiveHourColor = getQuotaColor(fiveHourRemaining);
 
   // 月度/日度数据
   const monthlyTokens = usageData?.monthly?.totalTokens || 0;
@@ -158,8 +156,14 @@ function formatStatusLine(context, usageData, options = {}) {
   const monthlyDisplay = formatTokens(monthlyTokens);
   const dailyDisplay = formatTokens(dailyTokens);
 
-  // 进度条
+  // 进度条（上下文）
   const progressBar = makeProgressBar(context.contextUsed);
+
+  // 5h 进度条（剩余百分比）
+  const fiveHourBar = makeProgressBar(fiveHourRemaining);
+
+  // MCP 进度条（剩余百分比）
+  const mcpBar = makeProgressBar(mcpRemaining);
 
   // 构建第一行
   const parts = [];
@@ -170,9 +174,9 @@ function formatStatusLine(context, usageData, options = {}) {
   // Token 使用 - 按新顺序：5小时配额 > 会话 > 日 > 月 > MCP
   const tokenParts = [];
 
-  // 每5小时配额（显示剩余百分比）
+  // 每5小时配额（进度条）
   if (showFiveHours) {
-    tokenParts.push(`${fiveHourColor}5h:${fiveHourRemaining}%${COLORS.reset}`);
+    tokenParts.push(`5h${fiveHourBar}${fiveHourRemaining}%`);
   }
 
   // 当前会话
@@ -194,9 +198,9 @@ function formatStatusLine(context, usageData, options = {}) {
     parts.push(tokenParts.join(' '));
   }
 
-  // MCP 配额（放在最后）
+  // MCP 配额（进度条）
   if (showMCP) {
-    parts.push(`${quotaColor}MCP:${mcpRemaining}%${COLORS.reset}`);
+    parts.push(`MCP${mcpBar}${mcpRemaining}%`);
   }
 
   const line1 = parts.join(' │ ');
