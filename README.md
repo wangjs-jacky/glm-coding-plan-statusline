@@ -1,11 +1,11 @@
 # GLM Coding Plan Statusline
 
 <p align="center">
-  <strong>GLM Coding Plan 智能状态栏</strong>
+  <strong>Smart Status Bar for GLM Coding Plan</strong>
 </p>
 
 <p align="center">
-  帮助 GLM Coding Plan 用户实时掌握套餐使用情况
+  Real-time usage monitoring for GLM Coding Plan users
 </p>
 
 <p align="center">
@@ -15,120 +15,28 @@
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-blue.svg" alt="Platform">
 </p>
 
----
-
-## 📖 中文文档
-
-### ✨ 核心特性
-
-- 🎯 **实时配额监控** - 显示 MCP 月度配额剩余百分比
-- 📊 **Token 使用追踪** - 月度/日度/会话三级 Token 消耗统计
-- 📈 **上下文进度条** - 可视化上下文窗口使用情况
-- 🌈 **智能颜色提示** - 根据使用率自动变色警告
-- ⚡ **智能缓存** - 减少 API 请求，提升响应速度
-- 🔧 **灵活配置** - 支持多种显示模式
-
-### 📋 系统要求
-
-- **Node.js**: 版本 ≥ 16.0.0
-- **Claude Code**: 配合 GLM Coding Plan 使用
-- **GLM Coding Plan**: 需要有效的 ANTHROPIC_AUTH_TOKEN
-
-### 🚀 快速开始
-
-#### 一键配置
-
-在 `~/.claude/settings.json` 中添加：
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "npx @wangjs-jacky/glm-coding-plan-statusline@latest"
-  }
-}
-```
-
-保存后重新打开 Claude Code 即可看到状态栏！
-
-### 📊 显示效果
-
-```
-GLM-5 │ Sess:160.0K │ Day:42.8M │ Mon:979.2M
-5H ██░░░░░░ 22% │ MCP ███░░░░░ 28% │ Context █████░░░ 68% (200K)
-```
-
-### 🎨 显示字段说明
-
-**第一行：Token 统计**
-| 字段 | 说明 | 颜色 |
-|------|------|------|
-| **GLM-5** | 当前模型 | 青色加粗 |
-| **Sess:160.0K** | 当前会话 Token | 灰色 |
-| **Day:42.8M** | 今日 Token 消耗 | 默认 |
-| **Mon:979.2M** | 当月 Token 消耗 | 蓝色 |
-
-**第二行：配额进度条**
-| 字段 | 说明 | 颜色规则 |
-|------|------|----------|
-| **5H ██░░░░░░ 22%** | 5小时配额已使用 | 绿(<50%) / 黄(50-80%) / 红(>80%) |
-| **MCP ███░░░░░ 28%** | 月度配额已使用 | 绿(<50%) / 黄(50-80%) / 红(>80%) |
-| **Context █████░░░ 68%** | 上下文使用率 | 绿(<50%) / 黄(50-80%) / 红(>80%) |
-
-### ⚙️ 配置选项
-
-```bash
-# 完整模式 (双行显示，推荐)
-npx @wangjs-jacky/glm-coding-plan-statusline
-
-# 紧凑模式 (单行显示)
-npx @wangjs-jacky/glm-coding-plan-statusline --compact
-
-# 本地模式 (不请求 API，仅显示上下文)
-npx @wangjs-jacky/glm-coding-plan-statusline --local
-
-# 清除缓存
-npx @wangjs-jacky/glm-coding-plan-statusline --clear-cache
-
-# 查看帮助
-npx @wangjs-jacky/glm-coding-plan-statusline --help
-```
-
-### 🔧 环境变量
-
-确保以下环境变量已设置（通常在 settings.json 的 env 字段中）：
-
-```json
-{
-  "env": {
-    "ANTHROPIC_AUTH_TOKEN": "your-token-here",
-    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic"
-  }
-}
-```
+<p align="center">
+  <a href="./README_CN.md">中文文档</a>
+</p>
 
 ---
 
-## 📖 English Documentation
+## Features
 
-### ✨ Core Features
+- **Real-time Quota Monitoring** - Display MCP monthly quota usage percentage
+- **Token Usage Tracking** - Monthly/Daily/Session level token consumption statistics
+- **Context Progress Bar** - Visualize context window usage
+- **Smart Color Alerts** - Automatic color change warnings based on usage rate
+- **Smart Caching** - Reduce API requests, improve response speed
+- **Flexible Configuration** - Support multiple display modes
 
-- 🎯 **Real-time Quota Monitoring** - Display MCP monthly quota remaining percentage
-- 📊 **Token Usage Tracking** - Monthly/Daily/Session level token consumption statistics
-- 📈 **Context Progress Bar** - Visualize context window usage
-- 🌈 **Smart Color Alerts** - Automatic color change warnings based on usage rate
-- ⚡ **Smart Caching** - Reduce API requests, improve response speed
-- 🔧 **Flexible Configuration** - Support multiple display modes
-
-### 📋 Requirements
+## Requirements
 
 - **Node.js**: Version ≥ 16.0.0
 - **Claude Code**: Used with GLM Coding Plan
 - **GLM Coding Plan**: Valid ANTHROPIC_AUTH_TOKEN required
 
-### 🚀 Quick Start
-
-#### One-step Configuration
+## Quick Start
 
 Add to `~/.claude/settings.json`:
 
@@ -143,14 +51,31 @@ Add to `~/.claude/settings.json`:
 
 Save and restart Claude Code to see the status bar!
 
-### 📊 Display Example
+## Display Example
 
 ```
-GLM-5 │ Session:160.0K │ Day:42.8M │ Month:979.2M
+GLM-5 │ Sess:160.0K │ Day:42.8M │ Mon:979.2M
 5H ██░░░░░░ 22% │ MCP ███░░░░░ 28% │ Context █████░░░ 68% (200K)
 ```
 
-### ⚙️ Options
+### Fields
+
+**Line 1: Token Statistics**
+| Field | Description | Color |
+|-------|-------------|-------|
+| **GLM-5** | Current model | Cyan bold |
+| **Sess:160.0K** | Session tokens | Gray |
+| **Day:42.8M** | Daily tokens | Default |
+| **Mon:979.2M** | Monthly tokens | Blue |
+
+**Line 2: Quota Progress Bars**
+| Field | Description | Color Rules |
+|-------|-------------|-------------|
+| **5H** | 5-hour quota used | Green(<50%) / Yellow(50-80%) / Red(>80%) |
+| **MCP** | Monthly quota used | Green(<50%) / Yellow(50-80%) / Red(>80%) |
+| **Context** | Context window usage | Green(<50%) / Yellow(50-80%) / Red(>80%) |
+
+## Options
 
 ```bash
 # Full mode (two lines, recommended)
@@ -169,17 +94,28 @@ npx @wangjs-jacky/glm-coding-plan-statusline --clear-cache
 npx @wangjs-jacky/glm-coding-plan-statusline --help
 ```
 
----
+## Environment Variables
 
-## 📝 License
+Ensure these environment variables are set (usually in settings.json env field):
+
+```json
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "your-token-here",
+    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic"
+  }
+}
+```
+
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🤝 Contributing
+## Contributing
 
 Issues and Pull Requests are welcome!
 
-## 📞 Contact
+## Contact
 
 - **Author**: wangjs-jacky
 - **GitHub**: https://github.com/wangjs-jacky/glm-coding-plan-statusline
@@ -188,5 +124,5 @@ Issues and Pull Requests are welcome!
 ---
 
 <p align="center">
-  如果这个项目对你有帮助，请给一个 ⭐️ Star！
+  If this project helps you, please give it a ⭐️ Star!
 </p>
