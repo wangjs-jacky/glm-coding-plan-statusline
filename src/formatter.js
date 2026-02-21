@@ -164,7 +164,7 @@ function formatStatusLine(context, usageData, options = {}) {
 
   if (showContext) {
     const bar = makeProgressBar(context.contextUsed, 8);
-    barParts.push(`Ctx ${bar}${context.contextUsed}% (${contextDisplay})`);
+    barParts.push(`Context ${bar}${context.contextUsed}% (${contextDisplay})`);
   }
 
   const line2 = barParts.join(' │ ');
