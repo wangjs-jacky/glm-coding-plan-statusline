@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Cache
+.cache/
+*.cache
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+
+# Test
+coverage/
