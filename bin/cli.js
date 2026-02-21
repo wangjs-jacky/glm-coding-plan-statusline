@@ -42,7 +42,7 @@ if (options.help) {
 GLM Coding Plan Statusline - GLM Coding Plan 智能状态栏
 
 使用方法:
-  npx glm-coding-plan-statusline [选项]
+  npx @wangjs-jacky/glm-coding-plan-statusline [选项]
 
 选项:
   --local, -l       仅使用本地上下文数据，不请求 API
@@ -56,7 +56,7 @@ GLM Coding Plan Statusline - GLM Coding Plan 智能状态栏
   {
     "statusLine": {
       "type": "command",
-      "command": "npx glm-coding-plan-statusline"
+      "command": "npx @wangjs-jacky/glm-coding-plan-statusline"
     }
   }
 
@@ -66,13 +66,13 @@ GLM Coding Plan Statusline - GLM Coding Plan 智能状态栏
 
 示例:
   # 默认模式 (双行显示)
-  npx glm-coding-plan-statusline
+  npx @wangjs-jacky/glm-coding-plan-statusline
 
   # 紧凑模式 (单行显示)
-  npx glm-coding-plan-statusline --compact
+  npx @wangjs-jacky/glm-coding-plan-statusline --compact
 
   # 本地模式 (无需网络)
-  npx glm-coding-plan-statusline --local
+  npx @wangjs-jacky/glm-coding-plan-statusline --local
 
 更多信息: https://github.com/wangjs-jacky/glm-coding-plan-statusline
 `);

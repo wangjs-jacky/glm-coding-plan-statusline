@@ -203,18 +203,26 @@ async function fetchQuotaLimit() {
   const limits = data?.data?.limits || data?.limits || [];
 
   let mcpUsage = { percentage: 0, current: 0, total: 1000 };
+  let fiveHourQuota = { percentage: 0, remaining: 100 };
   let tokenUsage = { percentage: 0 };
 
   for (const limit of limits) {
     if (limit.type === 'TIME_LIMIT') {
-      mcpUsage = {
+      // 5 小时限流配额
+      fiveHourQuota = {
         percentage: limit.percentage || 0,
+        remaining: 100 - (limit.percentage || 0),
         current: limit.currentValue || 0,
         total: limit.usage || 1000,
         details: limit.usageDetails || []
       };
     }
     if (limit.type === 'TOKENS_LIMIT') {
+      // Token 配额 (MCP)
+      mcpUsage = {
+        percentage: limit.percentage || 0,
+        remaining: 100 - (limit.percentage || 0)
+      };
       tokenUsage = {
         percentage: limit.percentage || 0
       };
@@ -223,6 +231,7 @@ async function fetchQuotaLimit() {
 
   return {
     mcpUsage,
+    fiveHourQuota,
     tokenUsage,
     level: data?.data?.level || data?.level || 'pro'
   };
