@@ -142,13 +142,11 @@ function formatStatusLine(context, usageData, options = {}) {
   const sessionDisplay = formatTokens(sessionTokens);
   const contextDisplay = formatContextSize(context.contextSize);
 
-  // MCP 配额（月度 Token 配额）
-  const mcpPercentage = usageData?.quota?.mcpUsage?.percentage || 0;
-  const mcpRemaining = 100 - mcpPercentage;
+  // MCP 配额（月度 Token 配额）- 显示已使用
+  const mcpUsed = usageData?.quota?.mcpUsage?.percentage || 0;
 
-  // 5 小时配额（API 调用限流）
-  const fiveHourPercentage = usageData?.quota?.fiveHourQuota?.percentage || 0;
-  const fiveHourRemaining = 100 - fiveHourPercentage;
+  // 5 小时配额（API 调用限流）- 显示已使用
+  const fiveHourUsed = usageData?.quota?.fiveHourQuota?.percentage || 0;
 
   // 月度/日度数据
   const monthlyTokens = usageData?.monthly?.totalTokens || 0;
@@ -159,11 +157,11 @@ function formatStatusLine(context, usageData, options = {}) {
   // 进度条（上下文）
   const progressBar = makeProgressBar(context.contextUsed);
 
-  // 5h 进度条（剩余百分比）
-  const fiveHourBar = makeProgressBar(fiveHourRemaining);
+  // 5h 进度条（已使用）
+  const fiveHourBar = makeProgressBar(fiveHourUsed);
 
-  // MCP 进度条（剩余百分比）
-  const mcpBar = makeProgressBar(mcpRemaining);
+  // MCP 进度条（已使用）
+  const mcpBar = makeProgressBar(mcpUsed);
 
   // 构建第一行
   const parts = [];
@@ -174,9 +172,9 @@ function formatStatusLine(context, usageData, options = {}) {
   // Token 使用 - 按新顺序：5小时配额 > 会话 > 日 > 月 > MCP
   const tokenParts = [];
 
-  // 每5小时配额（进度条）
+  // 每5小时配额（进度条，显示已使用）
   if (showFiveHours) {
-    tokenParts.push(`5h${fiveHourBar}${fiveHourRemaining}%`);
+    tokenParts.push(`5h${fiveHourBar}${fiveHourUsed}%`);
   }
 
   // 当前会话
@@ -198,9 +196,9 @@ function formatStatusLine(context, usageData, options = {}) {
     parts.push(tokenParts.join(' '));
   }
 
-  // MCP 配额（进度条）
+  // MCP 配额（进度条，显示已使用）
   if (showMCP) {
-    parts.push(`MCP${mcpBar}${mcpRemaining}%`);
+    parts.push(`MCP${mcpBar}${mcpUsed}%`);
   }
 
   const line1 = parts.join(' │ ');
