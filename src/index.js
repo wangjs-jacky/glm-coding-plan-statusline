@@ -46,15 +46,15 @@ async function fetchUsageDataWithCache() {
 
     // 否则并行获取缺失的数据
     const [monthly, daily, quota] = await Promise.all([
-      cachedMonthly ? Promise.resolve(cachedMonthly) : api.fetchMonthlyUsage().catch(() => ({ totalTokens: 0 })),
-      cachedDaily ? Promise.resolve(cachedDaily) : api.fetchDailyUsage().catch(() => ({ dailyTokens: 0 })),
-      cachedQuota ? Promise.resolve(cachedQuota) : api.fetchQuotaLimit().catch(() => ({ mcpUsage: { percentage: 0 } }))
+      cachedMonthly ? Promise.resolve(cachedMonthly) : api.fetchMonthlyUsage().catch(() => ({ totalTokens: 0, _error: true })),
+      cachedDaily ? Promise.resolve(cachedDaily) : api.fetchDailyUsage().catch(() => ({ dailyTokens: 0, _error: true })),
+      cachedQuota ? Promise.resolve(cachedQuota) : api.fetchQuotaLimit().catch(() => ({ mcpUsage: { percentage: 0 }, _error: true }))
     ]);
 
-    // 写入缓存
-    if (!cachedMonthly && monthly) cache.writeCache('monthly', monthly);
-    if (!cachedDaily && daily) cache.writeCache('daily', daily);
-    if (!cachedQuota && quota) cache.writeCache('quota', quota);
+    // 写入缓存（跳过错误数据）
+    if (!cachedMonthly && monthly && !monthly._error) cache.writeCache('monthly', monthly);
+    if (!cachedDaily && daily && !daily._error) cache.writeCache('daily', daily);
+    if (!cachedQuota && quota && !quota._error) cache.writeCache('quota', quota);
 
     return {
       monthly,
