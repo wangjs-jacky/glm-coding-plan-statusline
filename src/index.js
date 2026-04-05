@@ -88,10 +88,22 @@ async function fetchUsageDataWithCache() {
       cachedQuota ? Promise.resolve(cachedQuota) : api.fetchQuotaLimit().catch(() => ({ mcpUsage: { percentage: 0 }, _error: true }))
     ]);
 
-    // 写入缓存（跳过错误数据）
+    // 写入缓存（跳过错误数据，保护关键字段不丢失）
     if (!cachedMonthly && monthly && !monthly._error) cache.writeCache('monthly', monthly);
     if (!cachedDaily && daily && !daily._error) cache.writeCache('daily', daily);
-    if (!cachedQuota && quota && !quota._error) cache.writeCache('quota', quota);
+    if (!cachedQuota && quota && !quota._error) {
+      // 新数据缺少 nextResetTime 时，从已过期缓存中保留
+      const oldQuota = cache.readCacheIgnoreTTL('quota');
+      if (oldQuota) {
+        if (!quota.mcpUsage?.nextResetTime && oldQuota.mcpUsage?.nextResetTime) {
+          quota.mcpUsage = { ...quota.mcpUsage, nextResetTime: oldQuota.mcpUsage.nextResetTime };
+        }
+        if (!quota.fiveHourQuota?.nextResetTime && oldQuota.fiveHourQuota?.nextResetTime) {
+          quota.fiveHourQuota = { ...quota.fiveHourQuota, nextResetTime: oldQuota.fiveHourQuota.nextResetTime };
+        }
+      }
+      cache.writeCache('quota', quota);
+    }
 
     return {
       monthly,

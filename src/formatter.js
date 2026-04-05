@@ -100,6 +100,17 @@ function parseContext(input) {
 }
 
 /**
+ * 格式化重置时间（毫秒时间戳 → HH:mm）
+ */
+function formatResetTime(timestamp) {
+  if (!timestamp) return '';
+  const d = new Date(timestamp);
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+/**
  * 生成状态栏输出
  */
 function formatStatusLine(context, usageData, options = {}) {
@@ -153,7 +164,9 @@ function formatStatusLine(context, usageData, options = {}) {
   if (showFiveHours) {
     const bar = makeProgressBar(fiveHourUsed, 8);
     const color = getPercentColor(fiveHourUsed);
-    barParts.push(`5H ${bar}${color}${fiveHourUsed}%${COLORS.reset}`);
+    const resetTime = formatResetTime(usageData?.quota?.fiveHourQuota?.nextResetTime);
+    const resetLabel = resetTime ? ` ↻${resetTime}` : '';
+    barParts.push(`5H ${bar}${color}${fiveHourUsed}%${resetLabel}${COLORS.reset}`);
   }
 
   if (showMCP) {
@@ -198,6 +211,7 @@ module.exports = {
   makeProgressBar,
   getPercentColor,
   parseContext,
+  formatResetTime,
   formatStatusLine,
   formatCompactStatusLine
 };

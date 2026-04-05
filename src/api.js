@@ -214,14 +214,16 @@ async function fetchQuotaLimit() {
         remaining: 100 - (limit.percentage || 0),
         current: limit.currentValue || 0,
         total: limit.usage || 1000,
-        details: limit.usageDetails || []
+        details: limit.usageDetails || [],
+        nextResetTime: limit.nextResetTime || null
       };
     }
     if (limit.type === 'TOKENS_LIMIT') {
       // 5 小时配额（API 标签搞反了，TOKENS_LIMIT 实际是 5H）
       fiveHourQuota = {
         percentage: limit.percentage || 0,
-        remaining: 100 - (limit.percentage || 0)
+        remaining: 100 - (limit.percentage || 0),
+        nextResetTime: limit.nextResetTime || null
       };
       tokenUsage = {
         percentage: limit.percentage || 0

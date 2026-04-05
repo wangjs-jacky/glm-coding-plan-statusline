@@ -92,6 +92,20 @@ function clearAllCache() {
 }
 
 /**
+ * 读取缓存（忽略过期时间，用于字段保护）
+ */
+function readCacheIgnoreTTL(type) {
+  try {
+    const filePath = CACHE_FILES[type];
+    if (!fs.existsSync(filePath)) return null;
+    const content = fs.readFileSync(filePath, 'utf-8');
+    return JSON.parse(content);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
  * 带缓存的 API 调用包装器
  */
 async function withCache(type, fetchFn) {
@@ -114,6 +128,7 @@ async function withCache(type, fetchFn) {
 
 module.exports = {
   readCache,
+  readCacheIgnoreTTL,
   writeCache,
   clearAllCache,
   withCache,
