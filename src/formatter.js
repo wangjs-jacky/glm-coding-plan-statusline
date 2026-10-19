@@ -122,6 +122,7 @@ function formatStatusLine(context, usageData, options = {}) {
     showContext = true,
     showFiveHours = true,
     showWeekly = true,
+    showCache = true,
     twoLines = true
   } = options;
 
@@ -191,6 +192,18 @@ function formatStatusLine(context, usageData, options = {}) {
     barParts.push(`Context ${bar}${context.contextUsed}% (${contextDisplay})`);
   }
 
+  // 緩存命中率顯示位。口徑＝cache_read ÷ 輸入側總量
+  // （input＋cache_creation＋cache_read），即當前上下文裡從緩存讀回的比例；
+  // 命中按約 1/4 計價所以配色與用量條相反；無輸入側數據整段隱藏。
+  if (showCache) {
+    const inputSide = context.inputTokens + context.cacheCreationTokens + context.cacheReadTokens;
+    if (inputSide > 0) {
+      const cacheRate = Math.round((context.cacheReadTokens / inputSide) * 100);
+      const color = cacheRate >= 80 ? COLORS.green : (cacheRate >= 50 ? COLORS.yellow : COLORS.red);
+      barParts.push(`Cache ${color}${cacheRate}%${COLORS.reset}`);
+    }
+  }
+
   const line2 = barParts.join(' │ ');
 
   if (twoLines) {
@@ -212,6 +225,7 @@ function formatCompactStatusLine(context, usageData) {
     showContext: true,
     showFiveHours: true,
     showWeekly: true,
+    showCache: true,
     twoLines: false
   });
 }
