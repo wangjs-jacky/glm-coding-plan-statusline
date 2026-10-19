@@ -121,6 +121,7 @@ function formatStatusLine(context, usageData, options = {}) {
     showMCP = true,
     showContext = true,
     showFiveHours = true,
+    showWeekly = true,
     twoLines = true
   } = options;
 
@@ -135,6 +136,7 @@ function formatStatusLine(context, usageData, options = {}) {
   // 配额数据
   const mcpUsed = usageData?.quota?.mcpUsage?.percentage || 0;
   const fiveHourUsed = usageData?.quota?.fiveHourQuota?.percentage || 0;
+  const weeklyUsed = usageData?.quota?.weeklyQuota?.percentage || 0;
 
   // 月度/日度数据
   const monthlyTokens = usageData?.monthly?.totalTokens || 0;
@@ -169,6 +171,15 @@ function formatStatusLine(context, usageData, options = {}) {
     barParts.push(`5H ${bar}${color}${fiveHourUsed}%${resetLabel}${COLORS.reset}`);
   }
 
+  // 周積分池顯示位，數據來自 unit=6 的 TOKENS_LIMIT
+  if (showWeekly) {
+    const bar = makeProgressBar(weeklyUsed, 8);
+    const color = getPercentColor(weeklyUsed);
+    const resetTime = formatResetTime(usageData?.quota?.weeklyQuota?.nextResetTime);
+    const resetLabel = resetTime ? ` ↻${resetTime}` : '';
+    barParts.push(`7D ${bar}${color}${weeklyUsed}%${resetLabel}${COLORS.reset}`);
+  }
+
   if (showMCP) {
     const bar = makeProgressBar(mcpUsed, 8);
     const color = getPercentColor(mcpUsed);
@@ -200,6 +211,7 @@ function formatCompactStatusLine(context, usageData) {
     showMCP: true,
     showContext: true,
     showFiveHours: true,
+    showWeekly: true,
     twoLines: false
   });
 }

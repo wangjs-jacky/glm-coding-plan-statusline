@@ -101,6 +101,10 @@ async function fetchUsageDataWithCache() {
         if (!quota.fiveHourQuota?.nextResetTime && oldQuota.fiveHourQuota?.nextResetTime) {
           quota.fiveHourQuota = { ...quota.fiveHourQuota, nextResetTime: oldQuota.fiveHourQuota.nextResetTime };
         }
+        // 2026-10-19 補丁：周池字段同樣保護
+        if (!quota.weeklyQuota?.nextResetTime && oldQuota.weeklyQuota?.nextResetTime) {
+          quota.weeklyQuota = { ...quota.weeklyQuota, nextResetTime: oldQuota.weeklyQuota.nextResetTime };
+        }
       }
       cache.writeCache('quota', quota);
     }

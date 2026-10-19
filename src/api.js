@@ -204,11 +204,12 @@ async function fetchQuotaLimit() {
 
   let mcpUsage = { percentage: 0, current: 0, total: 1000 };
   let fiveHourQuota = { percentage: 0, remaining: 100 };
+  let weeklyQuota = { percentage: 0, remaining: 100 };
   let tokenUsage = { percentage: 0 };
 
   for (const limit of limits) {
     if (limit.type === 'TIME_LIMIT') {
-      // MCP 配额（API 标签搞反了，TIME_LIMIT 实际是 MCP）
+      // MCP 月度配額（次數制）
       mcpUsage = {
         percentage: limit.percentage || 0,
         remaining: 100 - (limit.percentage || 0),
@@ -219,12 +220,25 @@ async function fetchQuotaLimit() {
       };
     }
     if (limit.type === 'TOKENS_LIMIT') {
-      // 5 小时配额（API 标签搞反了，TOKENS_LIMIT 实际是 5H）
-      fiveHourQuota = {
-        percentage: limit.percentage || 0,
-        remaining: 100 - (limit.percentage || 0),
-        nextResetTime: limit.nextResetTime || null
-      };
+      // 2026-10-19 補丁：按 unit 區分兩條積分池。
+      // 原版不看 unit，兩條 TOKENS_LIMIT 都寫入 fiveHourQuota 相互覆蓋，
+      // 周池（unit=6）的百分比被錯標成 5H。
+      // unit 語義判定依據見本 PR 描述
+      if (limit.unit === 6) {
+        // 周積分池
+        weeklyQuota = {
+          percentage: limit.percentage || 0,
+          remaining: 100 - (limit.percentage || 0),
+          nextResetTime: limit.nextResetTime || null
+        };
+      } else {
+        // 5 小時窗口積分池（unit=3，number=5）
+        fiveHourQuota = {
+          percentage: limit.percentage || 0,
+          remaining: 100 - (limit.percentage || 0),
+          nextResetTime: limit.nextResetTime || null
+        };
+      }
       tokenUsage = {
         percentage: limit.percentage || 0
       };
@@ -234,6 +248,7 @@ async function fetchQuotaLimit() {
   return {
     mcpUsage,
     fiveHourQuota,
+    weeklyQuota,
     tokenUsage,
     level: data?.data?.level || data?.level || 'pro'
   };
